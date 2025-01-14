@@ -9,6 +9,14 @@ import tempfile
 import json
 import socket
 
+# Import configuration
+try:
+    from config import *
+except ImportError:
+    print("Error: config.py not found!")
+    print("Please copy config.template.py to config.py and update the settings.")
+    exit(1)
+
 # Set up logging
 logging.basicConfig(
     level=logging.DEBUG,
@@ -18,13 +26,6 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
-
-# Configuration
-MAKE_WEBHOOK_URL = "https://hook.us1.make.com/ajgntubj9k5f83n2vcl2phuvd6nkofvv"
-MONITORED_SITES = [
-    "facebook",  # Simplified patterns
-    "reddit"
-]
 
 WARNING_HTML = """
 <!DOCTYPE html>
@@ -104,16 +105,15 @@ def send_to_make(site):
         data = {
             "site": format_site_name(site),
             "timestamp": datetime.now().isoformat(),
-            "user": "Bennett",
+            "user": USER_NAME,
             "browser_type": "incognito" if is_incognito(site) else "regular"
         }
         response = requests.post(MAKE_WEBHOOK_URL, json=data)
         logging.info(f"Notification sent for {format_site_name(site)}: {response.status_code}")
         
         # Backup notification in case Make.com is down
-        backup_webhook = os.getenv("BACKUP_WEBHOOK_URL")
-        if backup_webhook:
-            requests.post(backup_webhook, json=data)
+        if BACKUP_WEBHOOK_URL:
+            requests.post(BACKUP_WEBHOOK_URL, json=data)
     except Exception as e:
         logging.error(f"Error sending to Make: {e}")
 

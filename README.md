@@ -56,22 +56,22 @@ sudo systemctl start website-monitor
 
 ## Configuration
 
-1. Edit monitored websites in `monitor.py`:
-```python
-MONITORED_SITES = [
-    "reddit.com",
-    "facebook.com"
-    # Add more sites as needed
-]
+1. Create your configuration file:
+```bash
+# Copy the template configuration
+cp config.template.py config.py
+
+# Edit the configuration with your settings
+nano config.py
 ```
 
-Note: Site names are automatically formatted for display (e.g., "facebook.com" will appear as "Facebook" in notifications and emails)
+2. Update the following in config.py:
+- `MAKE_WEBHOOK_URL`: Your Make.com webhook URL
+- `MONITORED_SITES`: List of sites you want to monitor
+- `USER_NAME`: Your name for notifications
+- `BACKUP_WEBHOOK_URL`: Optional backup webhook URL
 
-2. Configure Make.com:
-   - Create a new scenario in Make.com
-   - Add a Webhook trigger (set to "On demand")
-   - Configure the actions (email, SMS, etc.)
-   - Copy the webhook URL to `MAKE_WEBHOOK_URL` in `monitor.py`
+Note: The config.py file is ignored by git to keep your settings private.
 
 ## Usage
 
